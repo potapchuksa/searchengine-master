@@ -1,10 +1,13 @@
 package searchengine.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import searchengine.repositories.PageRepository;
 
+@Component
 @RequiredArgsConstructor
-public class ServiceFunctions {
+public class SiteAccessSynchronizer {
 
     private final PageRepository repository;
     public synchronized boolean exists(String path) {

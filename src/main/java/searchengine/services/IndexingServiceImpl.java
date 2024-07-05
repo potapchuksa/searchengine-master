@@ -17,7 +17,7 @@ public class IndexingServiceImpl implements IndexingService {
 
         ForkJoinPool forkJoinPool = new ForkJoinPool();
         for (Site site : sites.getSites()) {
-            forkJoinPool.invoke(new PageParser(site.getUrl(), new ServiceFunctions()));
+            forkJoinPool.invoke(new PageParser(site.getUrl(), new SiteAccessSynchronizer()));
         }
     }
 
