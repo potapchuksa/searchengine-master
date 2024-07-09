@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import searchengine.dto.statistics.StatisticsResponse;
+import searchengine.services.IndexingService;
 import searchengine.services.StatisticsService;
 
 @RestController
@@ -12,9 +13,11 @@ import searchengine.services.StatisticsService;
 public class ApiController {
 
     private final StatisticsService statisticsService;
+    private final IndexingService indexingService;
 
-    public ApiController(StatisticsService statisticsService) {
+    public ApiController(StatisticsService statisticsService, IndexingService indexingService) {
         this.statisticsService = statisticsService;
+        this.indexingService = indexingService;
     }
 
     @GetMapping("/statistics")
@@ -24,7 +27,7 @@ public class ApiController {
 
     @GetMapping("/startIndexing")
     public void startIndexing() {
-
+        indexingService.startIndexing();
     }
 
     @GetMapping("/stopIndexing")

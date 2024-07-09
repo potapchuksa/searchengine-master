@@ -10,9 +10,9 @@ import searchengine.repositories.PageRepository;
 public class SiteAccessSynchronizer {
 
     private final PageRepository repository;
-    public synchronized boolean exists(String path) {
+    public synchronized void exists(String path) {
         if (!repository.findByPath(path).isPresent()) {
-            repository.save()
+            //repository.save()
         }
     }
 
