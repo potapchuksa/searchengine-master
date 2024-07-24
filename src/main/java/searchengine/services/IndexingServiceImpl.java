@@ -32,7 +32,7 @@ public class IndexingServiceImpl implements IndexingService {
         databaseCleanup();
 
         ForkJoinPool forkJoinPool = new ForkJoinPool();
-//        List<PageParser> tasks = new ArrayList<>();
+        List<PageParser> tasks = new ArrayList<>();
         for (Site site : sites.getSites()) {
             SiteEntity siteEntity = new SiteEntity();
             siteEntity.setStatus(Status.INDEXING);
@@ -40,15 +40,14 @@ public class IndexingServiceImpl implements IndexingService {
             siteEntity.setUrl(site.getUrl());
             siteEntity.setName(site.getName());
             siteRepository.save(siteEntity);
-            forkJoinPool.execute(new PageParser(pageRepository, siteEntity, site.getUrl()));
-//            tasks.add(new PageParser(pageRepository, siteEntity, site.getUrl()));
+            tasks.add(new PageParser(pageRepository, siteEntity, site.getUrl()));
         }
-//        for (PageParser task : tasks) {
-//            forkJoinPool.execute(task);
-//        }
-//        for (PageParser task : tasks) {
-//            task.join();
-//        }
+        for (PageParser task : tasks) {
+            forkJoinPool.invoke(task);
+        }
+        for (PageParser task : tasks) {
+            task.join();
+        }
     }
 
     @Override

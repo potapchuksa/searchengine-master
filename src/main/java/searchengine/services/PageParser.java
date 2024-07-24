@@ -39,7 +39,11 @@ public class PageParser extends RecursiveAction {
                 return;
             }
             try {
-                document = Jsoup.connect(path).get();
+                document = Jsoup.connect(path)
+                        .userAgent("SearchEngineMaster")
+                        .referrer("http://www.google.com")
+                        .get();
+                System.out.println();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -66,24 +70,26 @@ public class PageParser extends RecursiveAction {
         System.out.println("Doc location: " + document.location());
         for (Element element : elements) {
             String link = element.absUrl("href");
-//            System.out.println("\t" + link);
-            if (!link.contains(document.location())) {
-//                System.out.println("\t" + "!link.contains(path) -> " + link);
+            System.out.println("\t" + link);
+            String siteUrl = siteEntity.getUrl();
+            String siteUrlWithoutWww = siteEntity.getUrl().replaceAll("://www.", "://");
+            if (!link.contains(siteUrl) && !link.contains(siteUrlWithoutWww)) {
+                System.out.println("\t" + "!link.contains(path) -> " + link);
                 continue;
             }
             if (link.contains("#")) {
-//                System.out.println("\t" + "link.contains(\"#\") -> " + link);
+                System.out.println("\t" + "link.contains(\"#\") -> " + link);
                 continue;
             }
             if (link.matches(".+\\.\\w+") && !link.matches(".+\\.html")) {
-//                System.out.println("\t" + "link.matches(\".+\\\\.\\\\w+\") && !link.matches(\".+\\\\.html\" -> " + link);
+                System.out.println("\t" + "link.matches(\".+\\\\.\\\\w+\") && !link.matches(\".+\\\\.html\" -> " + link);
                 continue;
             }
             if (path.contains(link)) {
-//                System.out.println("\t" + "path.contains(link) -> " + link);
+                System.out.println("\t" + "path.contains(link) -> " + link);
                 continue;
             }
-//            System.out.println("\t" + "link is Ok -> " + link);
+            System.out.println("\t" + "link is Ok -> " + link);
             hrefSet.add(link);
         }
         System.out.println("\threfSet: " + hrefSet);
@@ -91,5 +97,8 @@ public class PageParser extends RecursiveAction {
             tasks.add(new PageParser(repository, siteEntity, href));
         }
         invokeAll(tasks);
+        for (PageParser task : tasks) {
+            task.join();
+        }
     }
 }
